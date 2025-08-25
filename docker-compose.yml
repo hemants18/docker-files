@@ -1,0 +1,29 @@
+services:
+  vue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vue
+    restart: always
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - vue_network
+
+  vue_nginx:
+    image: nginx:latest
+    container_name: vue_nginx
+    restart: always
+    volumes:
+      - ./nginx-default.conf:/etc/nginx/nginx.conf
+      - ./:/var/www/html
+    depends_on:
+      - vue
+    ports:
+      - "83:83"
+    networks:
+      - vue_network
+
+networks:
+  vue_network:
+    driver: bridge
